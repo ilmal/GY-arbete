@@ -1,2 +1,2 @@
 # Horisontal AI scaling
-*work for school
+*work for school*
