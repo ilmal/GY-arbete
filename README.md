@@ -4,5 +4,5 @@
 
 ## Important stuff
 
-**API KEY:**
+**API KEY (alphavantage):**
 - KGNJMQQ0GZUCIB2R
