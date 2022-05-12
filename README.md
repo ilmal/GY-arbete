@@ -15,6 +15,22 @@
 - https://www.alphavantage.co/
 
 
+### panda private doc
+
+- print(df)
+- pd.set_option("display.max_rows", 5000)
+- print(df.head(1))
+- print(df.loc[:178, ["time", "open"]])
+
+- for index, row in df.iterrows():
+      print(index, row["open"])
+      if index > 99:
+        break
+- df.loc[df["close"] > 1000]
+- df.describe()
+- df.sort_values("volume", ascending=False)
+- print(df["close"])
+- df.loc[df["close"] < 800]
 
 ### stuff n things
 
