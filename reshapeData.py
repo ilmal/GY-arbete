@@ -7,8 +7,6 @@ import numpy as np
 
 Need to rename, new_df to df, temp mistake
 
-reindex instead of spaghetti code below
-
 """
 
 
@@ -54,8 +52,8 @@ reshape_data_func(URL = "https://www.alphavantage.co/query?function=TIME_SERIES_
   # Setting time column to be index
   new_df.set_index("time", inplace=True)
   
-  new_df = new_df.reindex(time_index.keys())
-  new_df.index = range(len(time_index))
+  # resetting the index to be a list [0:len(df)] instead of time markers
+  df.reset_index(inplace=True)
   
   df = df[["open", "high", "low", "close", "volume"]].stack().to_frame() # stacking all data verticaly
   df.index = [f"{k}_{n}" for n,k in df.index] # name each index to have different indexes (eg, "open_0", "open_1", "open_2")
