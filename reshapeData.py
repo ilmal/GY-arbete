@@ -10,7 +10,7 @@ Need to rename, new_df to df, temp mistake
 """
 
 
-reshape_data_func(URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=TSLA&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv",
+def reshape_data_func(URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=TSLA&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv",
                   DAY_SPAN = [12, 13],
                  ):
   df = pd.read_csv(URL)
