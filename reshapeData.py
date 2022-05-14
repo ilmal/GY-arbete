@@ -7,6 +7,8 @@ import numpy as np
 
 Need to rename, new_df to df, temp mistake
 
+reindex instead of spaghetti code below
+
 """
 
 
