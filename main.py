@@ -1,3 +1,5 @@
+import pandas as pd
+
 import grab_data_func from "./dataGrab.py"
 import reshape_data_func from "./reshapeData.py"
 
@@ -27,13 +29,22 @@ def main():
   raw_data_arr = [] # array to store all data from diffrent time spans
   
   for time_interval in dates:
-    raw_data_arr.append(grab_data_func(time_interval[0], time_interval[1], URL))
+    raw_data_arr.append(grab_data_func(time_interval[0], time_interval[1], URL)) # grab data and append to arr
     
   # format data
-  data_arr = []
+  data_arr = [] # array to store all formatted data
   
   for raw_data in raw_data_arr:
-    data_arr.append(reshape_data_func(raw_data))
+    data_arr.append(reshape_data_func(raw_data)) # format data and append to arr
+  
+  df = pd.concat(data_arr) # combine all data to a single dataframe
+  df.reset_index(drop=True, inplace=True) # reset the index of the dataframe and update dataframe
+  
+  
+
+  
+  
+  
   
 if __main__ == "__main__":
   main()
