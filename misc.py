@@ -27,135 +27,34 @@ def calc_dates_func(data_points, start_date):
     return span_arr
 
 
-def get_raw_data(data_points, companies):
+def get_raw_data(data_slices, companies):
     """
     Example URL refrence
 
     URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=TSLA&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
 
     """
-    # THIS IS CODE NIGHTMARE, PLEASE GOD FORGIVE MEE! PYTHON NEEDS SWITCH!
-    def get_months():
-        data_array = [{  # define an array to store all the datapoints. Add the first datapoint as it will always be needed.
-            "year": "1",
-            "month": "1"
-        }]
-        if data_points > 30:  # add datapoints based on how many datapoints are requested from main func
-            data_array.append({
-                "year": "1",
-                "month": "2"
-            })
-        if data_points > 60:
-            data_array.append({
-                "year": "1",
-                "month": "3"
-            })
-        if data_points > 900:
-            data_array.append({
-                "year": "1",
-                "month": "4"
-            })
-        if data_points > 120:
-            data_array.append({
-                "year": "1",
-                "month": "5"
-            })
-        if data_points > 150:
-            data_array.append({
-                "year": "1",
-                "month": "6"
-            })
-        if data_points > 180:
-            data_array.append({
-                "year": "1",
-                "month": "7"
-            })
-        if data_points > 210:
-            data_array.append({
-                "year": "1",
-                "month": "8"
-            })
-        if data_points > 240:
-            data_array.append({
-                "year": "1",
-                "month": "9"
-            })
-        if data_points > 270:
-            data_array.append({
-                "year": "1",
-                "month": "10"
-            })
-        if data_points > 300:
-            data_array.append({
-                "year": "1",
-                "month": "11"
-            })
-        if data_points > 330:
-            data_array.append({
-                "year": "1",
-                "month": "12"
-            })
-        if data_points > 360:
-            data_array.append({
-                "year": "2",
-                "month": "1"
-            })
-        if data_points > 390:
-            data_array.append({
-                "year": "2",
-                "month": "2"
-            })
-        if data_points > 420:
-            data_array.append({
-                "year": "2",
-                "month": "3"
-            })
-        if data_points > 450:
-            data_array.append({
-                "year": "2",
-                "month": "4"
-            })
-        if data_points > 480:
-            data_array.append({
-                "year": "2",
-                "month": "5"
-            })
-        if data_points > 510:
-            data_array.append({
-                "year": "2",
-                "month": "6"
-            })
-        if data_points > 540:
-            data_array.append({
-                "year": "2",
-                "month": "7"
-            })
-        if data_points > 570:
-            data_array.append({
-                "year": "2",
-                "month": "8"
-            })
-        if data_points > 600:
-            data_array.append({
-                "year": "2",
-                "month": "9"
-            })
-        if data_points > 630:
-            data_array.append({
-                "year": "2",
-                "month": "10"
-            })
-        if data_points > 660:
-            data_array.append({
-                "year": "2",
-                "month": "11"
-            })
-        if data_points > 690:
-            data_array.append({
-                "year": "2",
-                "month": "12"
-            })
-        return data_array
+
+    def get_months(data_slices):
+
+        if data_slices > 25:
+            raise Exception("CUSTOM: datapoints > 24 not allowed")
+
+        return_arr = []
+
+        for i in range(data_slices):
+            i += 1
+            data_obj = {
+                "month": "1",
+                "year": "1"
+            }
+            if i > 12:
+                data_obj["year"] = str(2)
+                data_obj["month"] = str(i - 12)
+            else:
+                data_obj["month"] = str(i)
+            return_arr.append(data_obj)
+        return return_arr
 
     def get_data(url_arr):  # download every url in the url_array and return and array of all data
         df_raw_data = []
@@ -166,11 +65,13 @@ def get_raw_data(data_points, companies):
         return df_data
 
     url_arr = []
-    for data_obj in get_months():
-        print(data_obj)
+    for data_obj in get_months(data_slices):
         for company in companies:
             url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={company}&interval=5min&slice=year{data_obj['year']}month{data_obj['month']}&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
             url_arr.append(url)
+
+    for url in url_arr:
+        print(url)
 
     df = get_data(url_arr)  # get the df from functions
 
@@ -178,5 +79,5 @@ def get_raw_data(data_points, companies):
 
 
 if __name__ == "__main__":  # if run directly this will run
-    #print(calc_dates_func(10, "2022-05-09 00:00:00"))
-    get_raw_data(40, ["TSLA"])
+    # print(calc_dates_func(10, "2022-05-09 00:00:00"))
+    get_raw_data(25, ["TSLA"])
