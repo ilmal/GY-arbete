@@ -14,17 +14,31 @@ def split_data_to_days_func(df):
 
     return_arr = []
 
+    # make a copy of the original dataframe and set it to "time_df"
     time_df = df["time"].copy()
+    # rename the coĺumn to "time_day"
+    time_df.rename(columns={'time': 'time_day'}, inplace=True)
 
-    time_df.to_csv("time_df.csv")
+    # remove the H:M:S (00:00:00) part of the time_df, in order to only look at the day variable
+    time_df = time_df.loc[::1].str[:-9]
 
+    # adding the time_df back into the main df in order to compare later in the code
+    df = pd.concat([df, time_df], axis=1)
+
+    print(df.head(6))
+
+    # drop all the duplicate data, only one datapoint / day
+    time_df.drop_duplicates(inplace=True)
+
+    # reset the index to 0 for the first row, and " len(time_df) " for the last
+    time_df = time_df.reset_index(drop=True)
+
+    # for row in time_df:
     # print(row)
-    # print(row["time"])
-    print(type(time_df[::1]))
 
-    time_df = time_df[1].rstrip(-9)
+    # time_df.to_csv("time_df.csv")
 
-    print(time_df)
+    # print(time_df)
 
 
 def reshape_data_func(df):
