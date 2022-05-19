@@ -97,6 +97,14 @@ def reshape_data_func(df):
 
 if __name__ == "__main__":
 
+    URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=AMZN&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
+
+    df = pd.read_csv(URL)
+
+    split_data_to_days_func(df)
+
+if __name__ == "_main__":
+
     URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=TSLA&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
 
     df = pd.read_csv(URL)
