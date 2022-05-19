@@ -5,55 +5,55 @@ from reshapeData import reshape_data_func, split_data_to_days_func
 from misc import calc_dates_func, get_raw_data
 
 
+def get_data_from_company(data_slices, company):
+    raw_data = get_raw_data(
+        data_slices, company)
+
+    raw_data_arr = split_data_to_days_func(raw_data)
+
+    data_arr = []
+    for raw_data in raw_data_arr:
+        data_arr.append(reshape_data_func(raw_data))
+
+    return data_arr
+
+
 def main():
     """
 
-   1. grab data with grab func.
+   1. grab data with get_raw_data func.
 
    2. format the data with reshape func
 
-   3. train with the data
 
 
     """
 
-    data_slices = 25  # this is the amount of months worh of data that will be downloaded, 1 - 25: month1year1 - month12year2
+    companies = ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "JNJ", "NVDA"]
 
-    # get dates from func, takes args: (days worth of intervals), (start date)
-    dates = calc_dates_func(100, "2022-05-09 00:00:00")
+    data_slices = 20
 
-    URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=TSLA&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
+    companies = ["TSLA", "AAPL"]
 
-    raw_data = get_raw_data(1, ["TSLA"])
+    data_slices = 1
 
-    # raw_data.to_csv("raw_data.csv")
+    ###############################
 
-    split_data_to_days_func(raw_data)
+    # CURRENT PROBLEM IS THAT get_data_from_company returns array, and so data array is an array of arrays, which I cannot concat into pandas obj
 
-    # df = reshape_data_func(raw_data)
+    ###############################
 
-    # df.to_csv("out.csv")
+    data_arr = []
+    for company in companies:
+        data_arr.append(get_data_from_company(data_slices, company))
 
-    # # grab data
-    # raw_data_arr = []  # array to store all data from diffrent time spans
+    df = pd.concat(data_arr)  # combine all data to a single dataframe
 
-    # for time_interval in dates:
-    #     # grab data and append to arr
-    #     raw_data_arr.append(grab_data_func(
-    #         time_interval[0], time_interval[1], URL))
+    # reset the index of the dataframe and update dataframe
+    df.reset_index(drop=True, inplace=True)
 
-    # # format data
-    # data_arr = []  # array to store all formatted data
+    df.to_csv("out.csv")
 
-    # for raw_data in raw_data_arr:  # send the raw data to the reshape func to be formatted
-    #     # format data and append to arr
-    #     data_arr.append(reshape_data_func(raw_data))
 
-    # df = pd.concat(data_arr)  # combine all data to a single dataframe
-    # # reset the index of the dataframe and update dataframe
-    # df.reset_index(drop=True, inplace=True)
-
-    # print(df)
-    # df.to_csv("out.csv")
 if __name__ == "__main__":
     main()

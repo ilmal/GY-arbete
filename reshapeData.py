@@ -9,18 +9,19 @@ import numpy as np
 
 """
 
+### This function will take a dataframe and split it into an array of dataframes for each day. ###
+
 
 def split_data_to_days_func(df):
 
-    return_arr = []
-
     # make a copy of the original dataframe and set it to "time_df"
-    time_df = df["time"].copy()
-    # rename the coĺumn to "time_day"
-    time_df.rename(columns={'time': 'time_day'}, inplace=True)
+    time_df = df["time"].copy().to_frame()
+
+    # rename the coĺumn to "time_day" (need to turn the pandas.series to a pandas.DataFrame)
+    time_df.rename({'time': 'time_day'}, axis=1, inplace=True)
 
     # remove the H:M:S (00:00:00) part of the time_df, in order to only look at the day variable
-    time_df = time_df.loc[::1].str[:-9]
+    time_df = time_df["time_day"].str[:-9]
 
     # adding the time_df back into the main df in order to compare later in the code
     df = pd.concat([df, time_df], axis=1)
@@ -33,12 +34,18 @@ def split_data_to_days_func(df):
     # reset the index to 0 for the first row, and " len(time_df) " for the last
     time_df = time_df.reset_index(drop=True)
 
-    # for row in time_df:
-    # print(row)
+    return_arr = []  # Define arr to store the dataframes that will be returned from func
+    for index, row in time_df.to_frame().iterrows():
 
-    # time_df.to_csv("time_df.csv")
+        # put all rows with the same day into one dataframe
+        return_df = df[df["time_day"] == row["time_day"]]
+        # drop the "time_day" column
+        return_df.drop(["time_day"], axis=1, inplace=True)
 
-    # print(time_df)
+        # append the result dataframe to the return_arr
+        return_arr.append(return_df)
+
+    return return_arr
 
 
 def reshape_data_func(df):
@@ -48,25 +55,32 @@ def reshape_data_func(df):
 
     #####   changing the time column to only include time    ######
     for index, row in df.iterrows():
+
+        # check if the data is already formated, this should only happen in testing.
         try:
             time_obj = dt.datetime.strptime(row["time"], "%Y-%m-%d %H:%M:%S")
         except ValueError:
             continue
 
+        # get the time from dataframe and format it to: "00:00"
         time_string = time_obj.strftime("%H") + ":" + time_obj.strftime("%M")
 
+        # Loop through time index array and compare the time to the time_string in order to index the time stamps correctly
         for time_from_time_index in time_index:
             if time_string == time_from_time_index:
 
+                # set the index for the data array based on the time stamps in the time_index arr
                 df.loc[index, "time"] = time_from_time_index
-
-                # print(time_from_time_index)
 
     # Setting time column to be index
     df.set_index("time", inplace=True)
 
+    # reindex the dataframe to align with the time_index array, this will fill out empty fields with NaN
+    df = df.reindex(time_index.keys())
+    df.index = range(len(time_index))
+
     # resetting the index to be a list [0:len(df)] instead of time markers
-    df.reset_index(inplace=True)
+    # df.reset_index(inplace=True)
 
     df = df[["open", "high", "low", "close", "volume"]
             ].stack().to_frame()  # stacking all data verticaly
@@ -79,3 +93,27 @@ def reshape_data_func(df):
     print(df)
 
     return df
+
+
+if __name__ == "__main__":
+
+    URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=TSLA&interval=5min&slice=year1month1&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
+
+    df = pd.read_csv(URL)
+
+    now = dt.datetime.now()
+    custom_time = dt.datetime(int(now.strftime("%Y")), int(
+        now.strftime("%m")), (int(now.strftime("%d")) - 2))
+
+    for index, row in df.iterrows():  # dropping all data that doesn't align with my set date above (custom_time)
+        if custom_time > dt.datetime.strptime(row["time"], '%Y-%m-%d %H:%M:%S'):
+            df.drop(index, inplace=True)
+        if dt.datetime(int(now.strftime("%Y")), int(now.strftime("%m")), (int(now.strftime("%d")) - 1)) < dt.datetime.strptime(row["time"], '%Y-%m-%d %H:%M:%S'):
+            df.drop(index, inplace=True)
+
+    df = df.loc[::-1].set_index(df.index)
+    df.reset_index(inplace=True, drop=True)
+
+    df.to_csv("out.csv")
+
+    reshape_data_func(df).to_csv("out_format.csv")

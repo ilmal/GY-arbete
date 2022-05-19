@@ -27,7 +27,7 @@ def calc_dates_func(data_points, start_date):
     return span_arr
 
 
-def get_raw_data(data_slices, companies):
+def get_raw_data(data_slices, company):
     """
     Example URL refrence
 
@@ -66,9 +66,8 @@ def get_raw_data(data_slices, companies):
 
     url_arr = []
     for data_obj in get_months(data_slices):
-        for company in companies:
-            url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={company}&interval=5min&slice=year{data_obj['year']}month{data_obj['month']}&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
-            url_arr.append(url)
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol={company}&interval=5min&slice=year{data_obj['year']}month{data_obj['month']}&apikey=KGNJMQQ0GZUCIB2R&datatype=csv"
+        url_arr.append(url)
 
     for url in url_arr:
         print(url)
