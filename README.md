@@ -8,7 +8,18 @@
 *API for all market data*
 
 **API KEY:**
-- KGNJMQQ0GZUCIB2R
+- KGNJMQQ0GZUCIB2R (nils@u1.se)
+- LNE01TS7E5RFWHX7 (nils.malmberg@edu.jarfalla.se)
+- U2QRUXVWDVWTRFHW (1@u1.se)
+- Y8Z4GBMOF0K79BWU (2@u1.se)
+- ZLQVK9D7UWWKU3UQ (3@u1.se)
+- 58WOX8YU1UAZQDF4 (4@u1.se)
+- 0UPD7VFKAP9RDL2X (5@u1.se)
+- N5V14V3K3200W31J (6@u1.se)
+- GIRQDLBGXHKGVJ39 (7@u1.se)
+- 4CA3T536HNP3O89X (8@u1.se)
+- P9LOX6BLJ9OMNE1O (9@u1.se)
+- IWW9RBGER70UYAFH (10@u1.se)
 
 **LInks**
 - https://www.alphavantage.co/documentation/
