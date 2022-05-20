@@ -1,8 +1,8 @@
 import pandas as pd
 
-from dataGrab import grab_data_func
+#from dataGrab import grab_data_func
 from reshapeData import reshape_data_func, split_data_to_days_func
-from misc import calc_dates_func, get_raw_data
+from misc import get_raw_data
 
 
 def get_data_from_company(data_slices, company):
@@ -32,9 +32,12 @@ def main():
     """
 
     companies = ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN",
-                 "JNJ", "NVDA", "FB", "UNH", "BRK.B", "XOM"]
+                 "JNJ", "NVDA", "FB", "UNH", "XOM"]
 
-    data_slices = 1
+    companies = ["GOOGL", "MSFT", "AMZN",
+                 "JNJ", "NVDA", "FB", "UNH", "XOM"]
+
+    data_slices = 24  # from 0 - 24
 
     ###############################
 
@@ -44,7 +47,13 @@ def main():
 
     data_arr = []
     for company in companies:
-        data_arr.append(get_data_from_company(data_slices, company))
+        data = get_data_from_company(data_slices, company)
+        data_arr.append(data)
+
+        data.reset_index(inplace=True, drop=True)
+
+        print(f"writing data to {company}.csv (/data_points/)")
+        data.to_csv(f"./data_points/{company}.csv")
 
     df = pd.concat(data_arr)  # combine all data to a single dataframe
 
