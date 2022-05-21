@@ -15,9 +15,7 @@ def get_data_from_company(data_slices, company):
     for raw_data in raw_data_arr:
         data_arr.append(reshape_data_func(raw_data))
 
-    df = pd.concat(data_arr)
-
-    return df
+    return data_arr
 
 
 def main():
@@ -31,8 +29,11 @@ def main():
 
     """
 
-    companies = ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN",
-                 "JNJ", "NVDA", "FB", "UNH", "BRK.B", "XOM"]
+    companies = ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "JNJ", "NVDA"]
+
+    data_slices = 20
+
+    companies = ["TSLA", "AAPL"]
 
     data_slices = 1
 
