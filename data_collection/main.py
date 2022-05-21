@@ -34,8 +34,7 @@ def main():
     companies = ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN",
                  "JNJ", "NVDA", "FB", "UNH", "XOM"]
 
-    companies = ["GOOGL", "MSFT", "AMZN",
-                 "JNJ", "NVDA", "FB", "UNH", "XOM"]
+    companies = ["TSLA", "AAPL"]
 
     data_slices = 24  # from 0 - 24
 
@@ -53,7 +52,7 @@ def main():
         data.reset_index(inplace=True, drop=True)
 
         print(f"writing data to {company}.csv (/data_points/)")
-        data.to_csv(f"./data_points/{company}.csv")
+        data.to_csv(f"../data_points/{company}.csv")
 
     df = pd.concat(data_arr)  # combine all data to a single dataframe
 
