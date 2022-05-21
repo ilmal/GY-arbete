@@ -14,8 +14,6 @@ import numpy as np
 
 def split_data_to_days_func(df):
 
-    print(df)
-
     # make a copy of the original dataframe and set it to "time_df"
     time_df = df["time"].copy().to_frame()
 
@@ -28,7 +26,7 @@ def split_data_to_days_func(df):
     # adding the time_df back into the main df in order to compare later in the code
     df = pd.concat([df, time_df], axis=1)
 
-    # print(df.head(6))
+    print(df.head(6))
 
     # drop all the duplicate data, only one datapoint / day
     time_df.drop_duplicates(inplace=True)
@@ -39,10 +37,10 @@ def split_data_to_days_func(df):
     return_arr = []  # Define arr to store the dataframes that will be returned from func
     for index, row in time_df.to_frame().iterrows():
 
-        # put all rows with the same day into one dataframe, need to specify that return_df is a copy of df. In order to remove err thrown by pandas
-        return_df = df.loc[df["time_day"] == row["time_day"]].copy()
+        # put all rows with the same day into one dataframe
+        return_df = df[df["time_day"] == row["time_day"]]
         # drop the "time_day" column
-        return_df.drop(columns=["time_day"], inplace=True)
+        return_df.drop(["time_day"], axis=1, inplace=True)
 
         # append the result dataframe to the return_arr
         return_arr.append(return_df)
@@ -92,7 +90,7 @@ def reshape_data_func(df):
     # swap the axis to make the df column based instead of stacked
     df = df.swapaxes(0, 1, copy=True)
 
-    # print(df)
+    print(df)
 
     return df
 

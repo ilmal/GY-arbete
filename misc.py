@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 import pandas as pd
-import json
-import time
 
 
 def calc_dates_func(data_points, start_date):
@@ -58,23 +56,10 @@ def get_raw_data(data_slices, company):
             return_arr.append(data_obj)
         return return_arr
 
-    def grab_data_logic(URL):
-        df = pd.read_csv(URL)
-
-        if "Note" in df.to_string():
-            print("MAX CALLS, retry in 30s")
-            time.sleep(30)
-            return grab_data_logic(URL)
-        if "Information" in df.to_string():
-            raise RuntimeError("MAX DAILY CALLS, sorry mate :(")
-
-        print("RES VALID")
-        return df
-
     def get_data(url_arr):  # download every url in the url_array and return and array of all data
         df_raw_data = []
         for url in url_arr:
-            df_raw_data.append(grab_data_logic(url))
+            df_raw_data.append(pd.read_csv(url))
         # concat all data into a single df before return
         df_data = pd.concat(df_raw_data)
         return df_data
