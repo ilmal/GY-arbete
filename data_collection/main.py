@@ -27,8 +27,6 @@ def main():
 
    2. format the data with reshape func
 
-
-
     """
 
     companies = ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN",
@@ -38,12 +36,6 @@ def main():
 
     data_slices = 24  # from 0 - 24
 
-    ###############################
-
-    # CURRENT PROBLEM IS THAT get_data_from_company returns array, and so data array is an array of arrays, which I cannot concat into pandas obj
-
-    ###############################
-
     data_arr = []
     for company in companies:
         data = get_data_from_company(data_slices, company)
@@ -51,8 +43,8 @@ def main():
 
         data.reset_index(inplace=True, drop=True)
 
-        print(f"writing data to {company}.csv (/data_points/)")
-        data.to_csv(f"../data_points/{company}.csv")
+        print(f"writing data to {company}.csv (/data_points/5min_data)")
+        data.to_csv(f"../data_points/5min_data{company}.csv")
 
     df = pd.concat(data_arr)  # combine all data to a single dataframe
 
