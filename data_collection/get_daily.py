@@ -1,20 +1,16 @@
+from audioop import reverse
 import pandas as pd
 import time
 import os
 import requests
 import io
+import sys
 
 
-def blacklist_stock(URL):
-    """
-
-    https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=TSLA&outputsize=full&apikey=U2QRUXVWDVWTRFHW&datatype=csv
-
-    """
-    sym = URL.replace("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=",
-                      "").replace("&outputsize=full&apikey=U2QRUXVWDVWTRFHW&datatype=csv", "")
-
-    listings_df = pd.read_csv("./ALPHAVANTAGE_LISTINGS.csv")
+global err_counter
+err_counter = 0
+global reversed
+reversed = False
 
 
 def read_saved_data():
@@ -41,6 +37,16 @@ def download(URL, proxy_index):
         "stockholm.se.socks.nordhold.net",
         "us.socks.nordhold.net"
     ]
+
+    if reversed:
+        proxies = proxies[::-1]
+
+    global err_counter
+    if err_counter > 0:
+        if err_counter + proxy_index > len(proxies) - 1:
+            err_counter = 0
+        proxy_index += err_counter
+
     try:
         with requests.Session() as s:
             # s.keep_alive = False
@@ -51,36 +57,39 @@ def download(URL, proxy_index):
                               "").replace("&outputsize=full&apikey=U2QRUXVWDVWTRFHW&datatype=csv", "")
             print("downloading:", sym, " with ", proxies[proxy_index])
             r = s.get(URL, proxies=prox)
-
-            print("response: ", r)
-
             df = pd.read_csv(io.StringIO(r.text))
-            return df
             s.close()
+            return df
     except:
-        print("########################################################################################")
-        print("FAILURE OCCURED!!!")
-        print("########################################################################################")
+        print("ERR OCCURED WITH REQUEST!")
         pass
 
 
 def grab_data_logic(URL, proxy_index):  # needs URL and origin
     df = download(URL, proxy_index)
 
-    print("DF: ", df)
-
+    global err_counter
     try:
         if "Note" in df.to_string():
             print("MAX CALLS, changing proxy")
             return grab_data_logic(URL, proxy_index + 1)
         if "Information" in df.to_string():
-            print("MAX DAILY CALLS, sorry mate :(")
+            print("MAX DAILY CALLS, changing proxy")
             return grab_data_logic(URL, proxy_index + 1)
 
         print("RES VALID")
+        err_counter = 0
         return df
     except:
-        pass
+        print("########################################################################################")
+        print("FAILURE OCCURED!!!")
+        print("########################################################################################")
+
+        print("DATAFRAME: ", df)
+
+        err_counter += 1
+
+        re_run_main()
 
 
 def get_data(sym):
@@ -91,11 +100,25 @@ def get_data(sym):
     return df
 
 
+def re_run_main():
+    delay = 0
+
+    print(f"Value error, rerun code in: {delay}s")
+    time.sleep(delay)
+
+    main()
+
+
 def main():
+
+    print("REVERSE: ", reversed)
 
     listings_df = pd.read_csv("./ALPHAVANTAGE_LISTINGS.csv")
 
     listing_sym = listings_df.pop("symbol").to_list()
+
+    if reversed:
+        listing_sym = listing_sym[::-1]
 
     for sym in listing_sym:
         already_grabbed_data = read_saved_data()
@@ -115,7 +138,7 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except:
-        main()
+    if sys.argv[len(sys.argv) - 1] == "True":
+        reversed = True
+    print("ERR COUNTER:", err_counter)
+    main()
