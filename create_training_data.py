@@ -1,13 +1,27 @@
+import tensorflow as tf
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+import numpy as np
 from pickletools import optimize
 import pandas as pd
 import os
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-import tensorflow as tf
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 pd.set_option("display.max_rows", 5000)
+
+
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
 
 
 def get_data(index):
@@ -80,6 +94,7 @@ def handle_data(df, target_column):
     x_train_scaled = scaler.fit_transform(x_train)
     x_test_scaled = scaler.transform(x_test)
 
+    return (x_train, x_test, y_train, y_test)
     return (x_train_scaled, x_test_scaled, y_train, y_test)
 
     ############# NO NEED TO MANUALY CALCULATE THIS #####################
@@ -98,16 +113,15 @@ def neural_nets(input_value):
     tf.random.set_seed(50)
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(50000, activation="relu"),
-        tf.keras.layers.Dense(100000, activation="relu"),
-        tf.keras.layers.Dense(100000, activation="relu"),
-        tf.keras.layers.Dense(50000, activation="relu"),
-        tf.keras.layers.Dense(1, activation="sigmoid")
+        tf.keras.layers.Dense(5000, activation="relu"),
+        tf.keras.layers.Dense(1000, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
+        tf.keras.layers.Dense(1, activation="softmax")
     ])
 
     model.compile(
         loss=tf.keras.losses.binary_crossentropy,
-        optimizer=tf.keras.optimizers.Adam(lr=0.03),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.03),
         metrics=[
             tf.keras.metrics.BinaryAccuracy(name="accuracy"),
             tf.keras.metrics.Precision(name="precision"),
@@ -122,8 +136,8 @@ def neural_nets(input_value):
                                                      save_weights_only=True,
                                                      verbose=1)
 
-    model.fit(x_train, y_train, epochs=15, validation_data=(x_test, y_test),
-              callbacks=[cp_callback])
+    model.fit(x_train, y_train, epochs=15, batch_size=1,
+              validation_data=(x_test, y_test), callbacks=[cp_callback])
 
 
 def main():
@@ -156,7 +170,7 @@ def main():
     PATH_TO_FINAL_DATA = "./data_points/final_steps/"
 
     y_column = "close_2022-05-19"
-    number_of_datapoints = 3
+    number_of_datapoints = 1
 
     handle_data_out = handle_data(get_data(number_of_datapoints), y_column)
 
