@@ -54,6 +54,7 @@ if __name__ == "__main__":
     delete_bad_data()
 
     INPUT_PATH = "./grab_data_from_google/downloaded_data/"
+    INPUT_PATH = "./grab_data_from_google/index_data/"
 
     for file in os.listdir(INPUT_PATH):
 
