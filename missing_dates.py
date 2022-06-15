@@ -1,14 +1,25 @@
 from datetime import date, timedelta, datetime
+from sre_constants import IN
+from numpy import diff
 import pandas as pd
+import os
+
+from misc import delete_bad_data
 
 
-def main():
+def main(df):
 
-    df = pd.read_csv("./data_points/daily_data/ZZZ.csv")
+    # df = pd.read_csv("./data_points/daily_data/ZZZ.csv")
 
-    df = pd.read_csv("./test.csv")
+    # df = pd.read_csv("./test.csv")
 
-    df = df.set_index("timestamp")  # set index to time
+    # df = pd.read_csv("./grab_data_from_google/downloaded_data/A.csv")
+
+    df["Date"] = df["Date"].apply(lambda x: x.split(" ")[0])
+
+    df = df.rename(columns=str.lower)
+
+    df = df.set_index("date")  # set index to time
 
     df.index = pd.to_datetime(df.index)  # make the index to actual datetimes
 
@@ -39,4 +50,13 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    delete_bad_data()
+
+    INPUT_PATH = "./grab_data_from_google/downloaded_data/"
+
+    for file in os.listdir(INPUT_PATH):
+
+        print(file.split(".")[0])
+        diffrence = main(pd.read_csv(INPUT_PATH + file))
+        print(diffrence)

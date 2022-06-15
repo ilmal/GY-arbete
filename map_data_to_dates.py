@@ -10,11 +10,17 @@ from calc_total_days import calc_days
 
 def main():
 
+    # PATH_TO_INPUT = "./data_points/daily_data/"
+    # PATH_TO_OUTPUT = "./data_points/final_steps/"
+
+    PATH_TO_INPUT = "./grab_data_from_google/downloaded_data/"
+    PATH_TO_OUTPUT = "./grab_data_from_google/formated_data/"
+
     def step_index_def():
-        if len(os.listdir("./data_points/final_steps/")) == 0:
+        if len(os.listdir(PATH_TO_OUTPUT)) == 0:
             return 0
         index_arr = []
-        for file in os.listdir("./data_points/final_steps/"):
+        for file in os.listdir(PATH_TO_OUTPUT):
             index = int(file.replace("final_", "").replace(".csv", ""))
             index_arr.append(index)
 
@@ -38,7 +44,7 @@ def main():
 
     print(f"getting all data from download")
     # get data from downloaded cache
-    data_points = os.listdir("./data_points/daily_data/")
+    data_points = os.listdir(PATH_TO_INPUT)
     # data_points = ["TSLA", "AAPL", "AAA"]
     print(f"data_points: {len(data_points)}")
     for index, data in enumerate(data_points):
@@ -52,7 +58,7 @@ def main():
     print("reading all data and passing it into data_arr")
     data_list = []
     for data in data_points:
-        data_list.append(pd.read_csv(f"./data_points/daily_data/{data}"))
+        data_list.append(pd.read_csv(PATH_TO_INPUT + data))
     print("done")
 
     def create_data_step(data_arr):
@@ -62,7 +68,7 @@ def main():
 
         df.reset_index(inplace=True, drop=True)
 
-        df.to_csv(f"./data_points/final_steps/final_{step_index}.csv")
+        df.to_csv(f"{PATH_TO_OUTPUT}/final_{step_index}.csv")
         step_index += 1
 
         print("done")
@@ -80,15 +86,17 @@ def main():
         print("index: ", index, " step_index",
               step_index, "data_len", len(flatten_data))
 
+        df_old = df_old.rename(columns=str.lower)
+
         missing_value = False
-        for column in ["timestamp", "open", "high", "low", "close", "volume"]:
+        for column in ["date", "open", "high", "low", "close", "volume"]:
             if column not in df_old.columns.values.tolist():
                 missing_value = True
         if missing_value:
-            print("incomplete data: ", index)
+            # print("incomplete data: ", index)
             continue
 
-        df_old = df_old.set_index("timestamp")
+        df_old = df_old.set_index("date")
 
         df_old.to_csv("out.csv")
 

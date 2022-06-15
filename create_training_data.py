@@ -70,6 +70,15 @@ def handle_data(df, target_column):
     if "close" not in str(prev_target_column):
         raise("CUSOM ERR AT: create_training_data.py(FUNCTION: handle_data) selected column is not a close, something wrong with data")
 
+    print(df[target_column])
+    print(
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+    )
+    print(df[prev_target_column])
+
     df["binary_result"] = df.apply(
         lambda x: 1 if x[target_column] > x[prev_target_column] else 0, axis=1)
 
@@ -148,11 +157,9 @@ def main():
 
 
     CURRENT PROBLEM
-    The model is currently too big. Im calculating with a neural net with 2.5 * 10**19 connections. That is too much.
 
-    Need more work with data preperations. Use 1 month worth of individual data + avrage daily data per week. 
+    !! Need more work with data preperations. !! Use 1 month worth of individual data + avrage daily data per week. 
 
-    !!! Alternetivly try and adjust batch size to a verry small number. !!!
 
 
     1. drop all data missing latest close, only work with "complete" data
@@ -168,8 +175,9 @@ def main():
     """
     global PATH_TO_FINAL_DATA
     PATH_TO_FINAL_DATA = "./data_points/final_steps/"
+    PATH_TO_FINAL_DATA = "./grab_data_from_google/formated_data/"
 
-    y_column = "close_2022-05-19"
+    y_column = "close_2022-06-09 16.00.00"
     number_of_datapoints = 1
 
     handle_data_out = handle_data(get_data(number_of_datapoints), y_column)
