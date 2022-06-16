@@ -173,8 +173,8 @@ def start_compare_indexes():
 
     INDEX_FOLDER = "./index_data/"
 
-    first_index = 1
-    second_index = 2
+    first_index = 0
+    second_index = 1
 
     return compare_indexes(INDEX_FOLDER, [first_index, second_index])
 
@@ -211,9 +211,10 @@ def compare_indexes(INDEX_FOLDER, index_array):
     for i in no_match:
         print(i)
 
-    return(no_match, [file_names[first_index], file_names[second_index]])
+    print("FILE1: ", file_names[first_index],
+          "FILE2: ", file_names[second_index])
 
-    #print("COMPARISON: ", no_match)
+    return(no_match, [file_names[first_index], file_names[second_index]])
 
 
 def start_replace_missing_indexes():
@@ -287,11 +288,9 @@ def replace_missing_indexes(no_match, file_array):
         elif file_name == "data1":
             grab_index_result = grab_index(data2, date)
 
-        #print("grab_index_result: ", grab_index_result)
-
 
 if __name__ == "__main__":
 
-    # start_format_data()
-    start_compare_indexes()
+    start_format_data()
+    # start_compare_indexes()
     # start_replace_missing_indexes()
