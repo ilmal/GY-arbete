@@ -94,11 +94,11 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
     def get_index_values(spans):
 
         # load index data:
-        data_obj = {
-            "DJI_df": pd.read_csv(INDEX_FOLDER + "DJI_close.csv"),
-            "INX_df": pd.read_csv(INDEX_FOLDER + "INX_close.csv"),
-            "IXIC_df": pd.read_csv(INDEX_FOLDER + "IXIC_close.csv")
-        }
+        data_obj = [
+            pd.read_csv(INDEX_FOLDER + "DJI_close.csv"),  # 0 = DJI
+            pd.read_csv(INDEX_FOLDER + "INX_close.csv"),  # 1 = INX
+            pd.read_csv(INDEX_FOLDER + "IXIC_close.csv")  # 2 = IXIC
+        ]
 
         # DJI_df = pd.read_csv(INDEX_FOLDER + "DJI_close.csv")
         # INX_df = pd.read_csv(INDEX_FOLDER + "INX_close.csv")
@@ -138,18 +138,26 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
 
         # Mapping data to spans
         for span in index_spans:
-            for key, value in data_obj.items():
+            for index, df in enumerate(data_obj):
                 #print("KEY: ", key)
                 #print("VALUE: ", value)
 
-                value["Date"] = value["Date"].str.replace(" 16.00.00", "")
+                df["Date"] = df["Date"].str.replace(" 16.00.00", "")
 
-                start_index = value.index[value["Date"] == span[0]]
-                end_index = value.index[value["Date"] == span[1]]
+                start_index = df.index[df["Date"] == span[0]]
+                end_index = df.index[df["Date"] == span[1]]
+
+                if not len(start_index.values):
+                    print(f"Start date wrong: {span[0]}")
+
+                if not len(end_index.values):
+                    print(f"End date wrong: {span[1]}")
 
                 print(start_index, end_index)
-                print("START_VALUES: ", value.iloc[start_index], span[0])
-                print("END_VALUES: ", value.iloc[end_index], span[1])
+                print("START_VALUES: ",
+                      df.at[start_index.values[0], "Date"], "||",  span[0])
+                print("END_VALUES: ",
+                      df.at[end_index.values[0], "Date"], "||",  span[1])
                 print("\n")
 
         return index_spans
@@ -161,6 +169,129 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
     get_index_values(spans)
 
 
+def start_compare_indexes():
+
+    INDEX_FOLDER = "./index_data/"
+
+    first_index = 1
+    second_index = 2
+
+    return compare_indexes(INDEX_FOLDER, [first_index, second_index])
+
+
+def compare_indexes(INDEX_FOLDER, index_array):
+
+    first_index = index_array[0]
+    second_index = index_array[1]
+
+    file_names = os.listdir(INDEX_FOLDER)
+
+    indexes = []
+    for file in file_names:
+        indexes.append(
+            pd.read_csv(INDEX_FOLDER + file)
+        )
+
+    date_list = []
+    for i in indexes:
+        date_list.append(i["Date"].to_list())
+
+    no_match = []
+    date_len = len(date_list[0])
+    for index, dates_1 in enumerate(date_list[first_index]):
+        print(f"{index}/{date_len}")
+        match = False
+        for dates_2 in date_list[second_index]:
+            if dates_1 == dates_2:
+                match = True
+                continue
+        if not match:
+            no_match.append(dates_1)
+
+    for i in no_match:
+        print(i)
+
+    return(no_match, [file_names[first_index], file_names[second_index]])
+
+    #print("COMPARISON: ", no_match)
+
+
+def start_replace_missing_indexes():
+
+    index_comparison = start_compare_indexes()
+
+    no_match, file_array = index_comparison
+
+    replace_missing_indexes(no_match, file_array)
+
+
+def replace_missing_indexes(no_match, file_array):
+
+    INPUT_FILE = "./index_data/"
+
+    first_file = file_array[0]
+    second_file = file_array[1]
+
+    data1 = pd.read_csv(INPUT_FILE + first_file)
+    data2 = pd.read_csv(INPUT_FILE + second_file)
+
+    # check what data is missing values and then add missin value with calculated value
+    def check_location_of_missin_data(missing_data):
+
+        if missing_data not in data1["Date"].to_list():
+            return "data1"
+        if missing_data not in data2["Date"].to_list():
+            return "data2"
+        print("NO MATCH FOUND!")
+
+    missing_data_loc_arr = []
+    for missing_data in no_match:
+        missing_data_loc_arr.append(
+            check_location_of_missin_data(missing_data))
+
+    print(no_match)
+    print(missing_data_loc_arr)
+
+    print("NO_MATCH: ", len(no_match),
+          " MISSING_DATA_LOCATION: ", len(missing_data_loc_arr))
+
+    print("file1: ", first_file, "file2: ", second_file)
+
+    def grab_index(df, date):
+
+        days_offset_arr = [1, -1]
+
+        for days_offset in days_offset_arr:
+
+            date_obj = datetime.datetime.strptime(date, "%Y-%m-%d %H.%M.%S")
+
+            new_date = date_obj + relativedelta(days_offset)
+
+            new_date_string = new_date.strftime("%Y-%m-%d %H.%M.%S")
+
+            print("new_date_string: ", new_date_string)
+            print("old_date_string: ", date)
+
+            index = df.index[df["Date"] == new_date_string]
+
+            print("INDEX_LEN: ", len(index.values))
+
+            if len(index.values):
+                return index.values[0]
+
+    for index_for_date, date in enumerate(no_match):
+        file_name = missing_data_loc_arr[index_for_date]
+
+        if file_name == "data2":
+            grab_index_result = grab_index(data1, date)
+        elif file_name == "data1":
+            grab_index_result = grab_index(data2, date)
+
+        #print("grab_index_result: ", grab_index_result)
+
+
 if __name__ == "__main__":
 
-    start_format_data()
+    # start_format_data()
+    start_compare_indexes()
+    # start_replace_missing_indexes()
