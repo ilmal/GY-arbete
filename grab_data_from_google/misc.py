@@ -105,6 +105,8 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
 
             span_end_date = df["Date"][span_end_index]
 
+            span_end_date = df.at[span_end_index, "Date"]
+
             index_df = pd.read_csv(INDEX_FOLDER + "DJI_close.csv")
 
             def check_date(span_end_date):
@@ -118,6 +120,9 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
                 index_end_index = check_date((datetime.datetime.strptime(
                     span_end_date, "%Y-%m-%d") + relativedelta(days=1)).strftime("%Y-%m-%d"))
 
+            # print("SPAN END DATE: ", span_end_date,
+            #       "SPAN END INDEX: ", span_end_index)
+
             index_start_index = index_end_index - 2600
 
             return span_start_index, span_end_index, index_start_index.values[0], index_end_index.values[0]
@@ -125,34 +130,8 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
         index_spans = []
         for span in spans:
 
-            # span_start_date = datetime.datetime.strptime(span[0], "%Y-%m-%d")
-
-            # span_start_date = check_if_span_start_date_is_valid(
-            #     span_start_date)
-
-            # index_start_date = span_start_date + relativedelta(years=-10)
-
-            # index_start_date = check_if_date_is_valid(index_start_date)
-
-            #print(f"INDEX: {index}, SPAN: {index_start_date}")
-
-            # index_spans.append([
-            #     index_start_date.strftime("%Y-%m-%d"),
-            #     span_start_date.strftime("%Y-%m-%d")
-            # ])
-
-            # print("\n")
-            # print("SPAN[0]: ", span[0])
-            # print("SPAN[1]: ", span[1])
-            # print("\n")
-
             span_start_index, span_end_index, index_start_index, index_end_index = check_indexes(
                 span[0], span[1])
-
-            # print("SPAN_LEN: ", len(pd.read_csv(DATA_FOLDER +
-            #       file_name).values.tolist()), "SPAN_INDEX: ", span_end_index)
-            # print("INDEX_LEN: ", len(pd.read_csv(
-            #     INDEX_FOLDER + "DJI_close.csv").values.tolist()), "INDEX_INDEX: ", index_end_index)
 
             if span_start_index < 0 or index_start_index < 0 or span_end_index > len(pd.read_csv(DATA_FOLDER + file_name).values.tolist()) or index_end_index > len(pd.read_csv(INDEX_FOLDER + "DJI_close.csv").values.tolist()):
                 print("SKIPPING!")
@@ -167,31 +146,23 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
         index_span = []
         for span in index_spans:
             for index, df_index in enumerate(data_obj):
-                #print("KEY: ", key)
-                #print("VALUE: ", value)
 
                 df_index["Date"] = df_index["Date"].str.replace(
                     " 16.00.00", "")
 
                 df_data = pd.read_csv(DATA_FOLDER + file_name)
-                df_data["Date"] = df_index["Date"].str.replace(
+                df_data["Date"] = df_data["Date"].str.replace(
                     " 16.00.00", "")
-                # start_index = df.index[df["Date"] == span[0]]
-                # end_index = df.index[df["Date"] == span[1]]
 
                 start_span = span[0]
                 end_span = span[1]
                 start_index = span[2]
                 end_index = span[3]
 
-                # if not len(start_index):
-                #     print(f"Start date wrong: {span[0]}")
-
-                # if not len(end_index):
-                #     print(f"End date wrong: {span[1]}")
-
-                print(start_span, end_span)
-                print(start_index, end_index)
+                # print("START SPAN INDEX: ", start_span,
+                #       "END SPAN INDEX: ", end_span)
+                # print("START INDEX INDEX: ", start_index,
+                #       "END INDEX INDEX: ", end_index)
 
                 print("INDEX_VALUES: ",
                       df_index.at[start_index, "Date"], "||",  df_index.at[end_index, "Date"])

@@ -17,6 +17,8 @@ def main(df):
 
     df["Date"] = df["Date"].apply(lambda x: x.split(" ")[0])
 
+    df["Date"] = df["Date"].apply(lambda x: str(x) + " 00:00:00")
+
     df = df.rename(columns=str.lower)
 
     df = df.set_index("date")  # set index to time
@@ -24,8 +26,10 @@ def main(df):
     df.index = pd.to_datetime(df.index)  # make the index to actual datetimes
 
     # start is the index of the last item
-    start = df.iloc[len(df.index) - 1].name
-    end = df.iloc[0].name  # end is the index of the firs item
+    end = df.iloc[len(df.index) - 1].name
+    start = df.iloc[0].name  # end is the index of the firs item
+
+    print("START: ", start, "END: ", end)
 
     # missing dates is the diffrence between a full list of dates and the list provided by the dataframe
     missing_dates = pd.date_range(start=start, end=end).difference(df.index)
@@ -48,6 +52,8 @@ def main(df):
         i += 1
         print(i, str(e))
 
+    return diffrence
+
 
 if __name__ == "__main__":
 
@@ -58,6 +64,11 @@ if __name__ == "__main__":
 
     for file in os.listdir(INPUT_PATH):
 
-        print(file.split(".")[0])
-        diffrence = main(pd.read_csv(INPUT_PATH + file))
-        print(diffrence)
+        sort_list = ["IXIC_close.csv", "IXIC_from_yahoo.csv"]
+        sort_list = ["DJI_close.csv"]
+
+        if file in sort_list:
+
+            print(file.split(".")[0])
+            diffrence = main(pd.read_csv(INPUT_PATH + file))
+            print(diffrence)
