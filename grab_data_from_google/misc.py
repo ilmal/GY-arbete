@@ -1,10 +1,11 @@
 """
 
-This is a file for misc operations that isn't a part of any larger main programme. 
+This is a file for misc operations that isn't a part of any larger main program.
 
 
 """
 
+from operator import index
 import pandas as pd
 import os
 import datetime
@@ -18,35 +19,60 @@ def start_format_data():
     INDEX_FOLDER = "./index_data/"
     DATA_FOLDER = "./downloaded_data/"
     EARLIEST_INDEX_DATE = "1971-02-05"
+    OUTPUT_FOLDER = "./output_data/"
 
-    test_data = "AAPL.csv"
+    file_name = "AAPL.csv"
+    # file_name = "ACAD.csv"
 
-    format_data(test_data, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE)
+    df = pd.read_csv(DATA_FOLDER + file_name)
+
+    # Must be greater than 100
+    batch_size = 200
+
+    # Check if data already exists:
+
+    index_values = [0]
+    for file in os.listdir(OUTPUT_FOLDER + "X/"):
+        if file_name.split(".")[0] in file:
+            print("FOUND: ", file_name.split(".")[0], "in ", file)
+            index_values.append(int(file.split("_")[1].split(".")[0]))
+
+    index_values.sort()
+    i = index_values[-1] + 1
+    while True:
+
+        print(
+            "\n",
+            "\n",
+            "\n",
+            "######################################################",
+            "\n",
+            f"RUN NUMBER: {i}"
+            "\n",
+            "######################################################",
+            "\n",
+            "\n",
+            "\n",
+        )
+
+        span = [i * batch_size, i * batch_size + batch_size]
+
+        if span[1] >= len(df.index):
+            data_batch = df.iloc[span[0]:len(df.index), :]
+            data_batch = data_batch.reset_index(drop=True)
+            format_data(data_batch, i, file_name, INDEX_FOLDER,
+                        EARLIEST_INDEX_DATE, OUTPUT_FOLDER)
+            break
+        data_batch = df.iloc[span[0]:span[1], :]
+        data_batch = data_batch.reset_index(drop=True)
+        format_data(data_batch, i, file_name, INDEX_FOLDER,
+                    EARLIEST_INDEX_DATE, OUTPUT_FOLDER)
+        i += 1
 
 
-def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
-    """
+def format_data(data_batch, batch_index, file_name, INDEX_FOLDER, EARLIEST_INDEX_DATE, OUTPUT_FOLDER):
 
-    THE FORMAT OF THE DATA: 
-
-    100 days if actual data
-
-    10 years of index close data.
-
-    NASDAQ (IXIC) from: 1971-02-05
-    Dow Jones (DJI) from:  1970-01-02
-    S&P (INX) from: 1970-01-02
-
-
-    Calc spans:
-
-    The oldest index span must start at 1971-02-05 because IXIC
-
-
-
-
-
-    """
+    print("INDEX: ", data_batch["Date"].index)
 
     def calc_spans(dates):
 
@@ -67,25 +93,22 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
             valid_dates.append(date)
 
         spans = []
-        for split in range(1000):
+        n = 0
+        while True:
 
             BATCH_SIZE_OF_ACTUAL_STOCK = 100
 
-            span_index = [(BATCH_SIZE_OF_ACTUAL_STOCK * split),
-                          (BATCH_SIZE_OF_ACTUAL_STOCK * split + BATCH_SIZE_OF_ACTUAL_STOCK)]
+            span_index = [(n), (n + BATCH_SIZE_OF_ACTUAL_STOCK)]
 
-            if span_index[1] > len(pd.read_csv(DATA_FOLDER + file_name).values.tolist()):
-                #print("\n", "BREAKING!", "\n")
+            # print(len(data_batch.values.tolist()))
+            print(span_index[1])
+
+            if span_index[1] >= len(data_batch.values.tolist()):
+                print("\n", "BREAKING!", "\n")
                 break
 
-            span_inner = []
-            for i in span_index:
-                span_inner.append(valid_dates[i].split(" ")[0])
-
             spans.append(span_index)
-
-        # for i, value in enumerate(span):
-        #     print(f"INDEX: {i}, SPAN: {value}")
+            n += 1
 
         return spans
 
@@ -101,7 +124,12 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
         def check_indexes(span_start_index, span_end_index):
             # THIS FUNCTION RETURNS: span_start_index, spand_end_index, index_start_index, index_end_index
 
-            df = pd.read_csv(DATA_FOLDER + file_name)
+            df = data_batch
+
+            df["Date"] = df["Date"].str.replace(
+                " 16.00.00", "")
+            df["Date"] = df["Date"].str.replace(
+                " 13.00.00", "")
 
             span_end_date = df["Date"][span_end_index]
 
@@ -109,16 +137,25 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
 
             index_df = pd.read_csv(INDEX_FOLDER + "DJI_close.csv")
 
-            def check_date(span_end_date):
-                return index_df.index[index_df["Date"] ==
-                                      span_end_date]
+            index_df["Date"] = index_df["Date"].str.replace(
+                " 16.00.00", "")
+            index_df["Date"] = index_df["Date"].str.replace(
+                " 13.00.00", "")
 
-            index_end_index = check_date(span_end_date)
+            def check_date(span_end_date, day_offset=2):
 
-            if not len(index_end_index):
-                print("searching")
-                index_end_index = check_date((datetime.datetime.strptime(
-                    span_end_date, "%Y-%m-%d") + relativedelta(days=1)).strftime("%Y-%m-%d"))
+                result = index_df.index[index_df["Date"] ==
+                                        span_end_date]
+
+                if not len(result):
+                    print("Finding new index_end_index || ", span_end_date)
+                    result = check_date((datetime.datetime.strptime(
+                        span_end_date, "%Y-%m-%d") - relativedelta(days=day_offset)).strftime("%Y-%m-%d"), day_offset+1)
+
+                return result
+
+            index_end_index = check_date((datetime.datetime.strptime(
+                span_end_date, "%Y-%m-%d") - relativedelta(days=1)).strftime("%Y-%m-%d"))
 
             # print("SPAN END DATE: ", span_end_date,
             #       "SPAN END INDEX: ", span_end_index)
@@ -133,7 +170,7 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
             span_start_index, span_end_index, index_start_index, index_end_index = check_indexes(
                 span[0], span[1])
 
-            if span_start_index < 0 or index_start_index < 0 or span_end_index > len(pd.read_csv(DATA_FOLDER + file_name).values.tolist()) or index_end_index > len(pd.read_csv(INDEX_FOLDER + "DJI_close.csv").values.tolist()):
+            if span_start_index < 0 or index_start_index < 0 or span_end_index > len(data_batch.values.tolist()) or index_end_index > len(pd.read_csv(INDEX_FOLDER + "DJI_close.csv").values.tolist()):
                 print("SKIPPING!")
                 continue
 
@@ -145,38 +182,203 @@ def format_data(file_name, INDEX_FOLDER, DATA_FOLDER, EARLIEST_INDEX_DATE):
         data_span = []
         index_span = []
         for span in index_spans:
-            for index, df_index in enumerate(data_obj):
+            df_index = pd.read_csv(INDEX_FOLDER + "DJI_close.csv")
 
-                df_index["Date"] = df_index["Date"].str.replace(
-                    " 16.00.00", "")
+            df_index["Date"] = df_index["Date"].str.replace(
+                " 16.00.00", "").replace(" 13.00.00", "")
 
-                df_data = pd.read_csv(DATA_FOLDER + file_name)
-                df_data["Date"] = df_data["Date"].str.replace(
-                    " 16.00.00", "")
+            df_data = data_batch
+            df_data["Date"] = df_data["Date"].str.replace(
+                " 16.00.00", "").replace(" 13.00.00", "")
 
-                start_span = span[0]
-                end_span = span[1]
-                start_index = span[2]
-                end_index = span[3]
+            start_span = span[0]
+            end_span = span[1]
+            start_index = span[2]
+            end_index = span[3]
 
-                # print("START SPAN INDEX: ", start_span,
-                #       "END SPAN INDEX: ", end_span)
-                # print("START INDEX INDEX: ", start_index,
-                #       "END INDEX INDEX: ", end_index)
+            # print("START SPAN INDEX: ", start_span,
+            #       "END SPAN INDEX: ", end_span)
+            # print("START INDEX INDEX: ", start_index,
+            #       "END INDEX INDEX: ", end_index)
 
-                print("INDEX_VALUES: ",
-                      df_index.at[start_index, "Date"], "||",  df_index.at[end_index, "Date"])
-                print("DATA_VALUES: ",
-                      df_data.at[start_span, "Date"], "||",  df_data.at[end_span, "Date"])
-                print("\n")
+            print("INDEX_VALUES: ",
+                  df_index.at[start_index, "Date"], "||",  df_index.at[end_index, "Date"])
+            print("DATA_VALUES: ",
+                  df_data.at[start_span, "Date"], "||",  df_data.at[end_span, "Date"])
+            print("\n")
 
-        return index_spans
+            data_span.append([start_span, end_span])
+            index_span.append([start_index, end_index])
 
-    df = pd.read_csv(DATA_FOLDER + file_name)
+        return data_span, index_span
+
+    def create_training_data(data_span, index_span):
+        """
+        get data values and map to a flat dataframe Y
+        get index values and map to flat dataframes Y
+        concat dataframes into training data Y
+        create testing data from the last day
+
+        create a main folder for stock
+        put the training data into a folder, put testingdata into another folder
+        name the data accordingly
+        """
+
+        def format_data(df, start_index, end_index):
+            df = df[start_index: end_index]
+
+            df = df.rename(columns=str.lower)
+
+            df["date"] = df["date"].str.replace(
+                " 16.00.00", "").replace(" 13.00.00", "")
+
+            df = df.set_index("date")
+
+            df = df[df.columns.values.tolist()]
+
+            if isinstance(df, pd.DataFrame):
+                df = df.stack().to_frame()
+            else:
+                df = df.to_frame().stack().to_frame()  # stacking all data verticaly
+
+            # name each index to have different indexes (eg, "open_0", "open_1", "open_2")
+            df.index = [f"{k}_{n}" for n, k in df.index]
+
+            # swap the axis to make the df column based instead of stacked
+            df = df.swapaxes(0, 1, copy=True)
+
+            return df
+
+        def create_data_df(data_span):
+            df = data_batch
+
+            df = format_data(df, data_span[0], data_span[1])
+
+            # print(df)
+            return df
+
+        def create_index_df(index_span, index_name):
+            df = pd.read_csv(INDEX_FOLDER + index_name)
+
+            df = format_data(df, index_span[0], index_span[1])
+
+            # print(df)
+            return df
+
+        def flatten_and_universalize_data(df_array):
+            df = pd.concat(df_array, axis=1)
+
+            df = df.swapaxes(0, 1, copy=True)
+
+            df = df.reset_index(drop=True)
+
+            df.index = [f"cl_{n}" for n in df.index]
+
+            df = df.swapaxes(0, 1, copy=True)
+
+            return df
+
+        df_final_arr = []
+        for i, value in enumerate(data_span):
+            # print("I: ", i)
+            data_span_inner = data_span[i]
+            index_span_inner = index_span[i]
+
+            df_array = []
+            df_array.append(create_data_df(data_span_inner))
+
+            for index_name in os.listdir(INDEX_FOLDER):
+                if "_close.csv" not in index_name:
+                    continue
+                df_array.append(create_index_df(index_span_inner, index_name))
+
+                ################ TEMP BREAK, REMOVE TO USE ALL INDEXES ###############
+                break
+
+            df = flatten_and_universalize_data(df_array)
+
+            df_final_arr.append(df)
+
+        df = pd.concat(df_final_arr)
+
+        # for i in df_final_arr:
+        #     print(i)
+
+        df = df.reset_index(drop=True)
+
+        print(df.head(5))
+
+        return df
+
+    def split_data(df):
+        print(
+            "\n",
+            "DATA SPLIT"
+            "\n",
+        )
+
+        y_df = df.iloc[:, :5]
+        x_df = df.iloc[:, 5:]
+
+        print(y_df.head(10))
+        print(x_df.head(10))
+
+        def calc_value_for_y(x_df, y_df):
+
+            x_values = x_df.iloc[:, 3]
+            y_values = y_df.iloc[:, 3]
+
+            y_list = []
+
+            print("LEN X_DF: ", len(x_values.tolist()))
+
+            for i, x in enumerate(x_values.tolist()):
+                y = y_values.tolist()[i]
+                if x >= y:
+                    y_list.append(0)
+                else:
+                    y_list.append(1)
+            return y_list
+
+        y_df = calc_value_for_y(x_df, y_df)
+
+        print("LEN Y_DF: ", len(y_df))
+
+        y_df = pd.DataFrame(y_df, columns=["cl_1"])
+
+        return x_df, y_df
+
+    def output_data(x_df, y_df):
+
+        ticker = file_name.split(".")[0]
+
+        x_df.to_csv(OUTPUT_FOLDER + "X/" + ticker + f"_{str(batch_index)}.csv")
+
+        y_df.to_csv(OUTPUT_FOLDER + "Y/" + ticker + f"_{str(batch_index)}.csv")
+
+    df = data_batch
 
     spans = calc_spans(df["Date"])
 
-    get_index_values(spans)
+    if len(spans) == 0:
+        print("NOT ENOUGH DATA TO PROCEED, EXITING")
+        return
+
+    # returns data_span, index_span as tuple
+    data_span, index_span = get_index_values(spans)
+
+    df = create_training_data(data_span, index_span)
+
+    x_df, y_df = split_data(df)
+
+    output_data(x_df, y_df)
+
+    """
+    NEXT STEP:
+    The df returned above is a full dataframe.
+    extract test data
+    put into folder
+    """
 
 
 def start_compare_indexes():

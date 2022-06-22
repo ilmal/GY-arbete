@@ -116,14 +116,17 @@ def handle_data(df, target_column):
     # return ([data.pop(target_column), data])
 
 
-def neural_nets(input_value):
-    x_train, x_test, y_train, y_test = input_value
+def neural_nets(x_train, y_train):
+
+    scaler = StandardScaler()
+    x_train_scaled = scaler.fit_transform(x_train)
 
     tf.random.set_seed(50)
 
     model = tf.keras.Sequential([
         tf.keras.layers.Dense(5000, activation="relu"),
-        tf.keras.layers.Dense(1000, activation="relu"),
+        tf.keras.layers.Dense(5000, activation="relu"),
+        tf.keras.layers.Dense(2500, activation="relu"),
         tf.keras.layers.Dense(500, activation="relu"),
         tf.keras.layers.Dense(1, activation="softmax")
     ])
@@ -138,15 +141,16 @@ def neural_nets(input_value):
         ]
     )
 
-    checkpoint_path = "training_1/cp.ckpt"
-    checkpoint_dir = os.path.dirname(checkpoint_path)
+    # checkpoint_path = "training_1/cp.ckpt"
+    # checkpoint_dir = os.path.dirname(checkpoint_path)
 
-    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                     save_weights_only=True,
-                                                     verbose=1)
+    # cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+    #                                                  save_weights_only=True,
+    #                                                  verbose=1)
 
-    model.fit(x_train, y_train, epochs=15, batch_size=1,
-              validation_data=(x_test, y_test), callbacks=[cp_callback])
+    # model.fit(x_train, y_train, epochs=15, callbacks=[cp_callback])
+
+    model.fit(x_train_scaled, y_train, epochs=15)
 
 
 def main():
@@ -175,16 +179,19 @@ def main():
     """
     global PATH_TO_FINAL_DATA
     PATH_TO_FINAL_DATA = "./data_points/final_steps/"
-    PATH_TO_FINAL_DATA = "./grab_data_from_google/formated_data/"
+    PATH_TO_FINAL_DATA = "./grab_data_from_google/output_data/"
 
     y_column = "close_2022-06-09 16.00.00"
     number_of_datapoints = 1
 
-    handle_data_out = handle_data(get_data(number_of_datapoints), y_column)
+    #handle_data_out = handle_data(get_data(number_of_datapoints), y_column)
 
-    print("handle_data_out: ", type(handle_data_out[0]))
+    #print("handle_data_out: ", type(handle_data_out[0]))
 
-    neural_nets(handle_data_out)
+    x_train = pd.read_csv(PATH_TO_FINAL_DATA + "X/" + "AAPL_1.csv")
+    y_train = pd.read_csv(PATH_TO_FINAL_DATA + "Y/" + "AAPL_1.csv")
+
+    neural_nets(x_train, y_train)
 
 
 if __name__ == "__main__":
