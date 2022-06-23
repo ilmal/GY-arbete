@@ -72,7 +72,7 @@ Epoch 5/5
 915/915 [==============================] - 59s 64ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
 
-#####################################################################################################################################
+---
 
 ```
 model = tf.keras.Sequential([
@@ -100,7 +100,7 @@ Epoch 5/5
 915/915 [==============================] - 3s 4ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
 
-#######################################################################################
+---
 ```
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(1000, activation="relu"),
@@ -122,7 +122,7 @@ Epoch 4/5
 Epoch 5/5
 915/915 [==============================] - 3s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
-#########################################################################
+---
 ```
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(500, activation="relu"),
@@ -145,7 +145,7 @@ Epoch 4/5
 Epoch 5/5
 915/915 [==============================] - 3s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
-#########################################################################
+---
 ```
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(100, activation="relu"),
@@ -168,7 +168,7 @@ Epoch 5/5
 915/915 [==============================] - 2s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
 
-#########################################################################
+---
 ```
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(50, activation="relu"),
@@ -190,7 +190,7 @@ Epoch 4/5
 Epoch 5/5
 915/915 [==============================] - 2s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
-#########################################################################
+---
 ```
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(10, activation="relu"),
@@ -212,7 +212,7 @@ Epoch 4/5
 Epoch 5/5
 915/915 [==============================] - 2s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 ```
-#########################################################################
+---
 ```
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(1000, activation="relu"),
