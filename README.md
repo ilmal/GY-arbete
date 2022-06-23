@@ -43,6 +43,199 @@
 - print(df["close"])
 - df.loc[df["close"] < 800]
 
+
+### Tensorflow testing statistics:
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10000, activation="relu"),
+    tf.keras.layers.Dense(10000, activation="relu"),
+    tf.keras.layers.Dense(5000, activation="relu"),
+    tf.keras.layers.Dense(2500, activation="relu"),
+    tf.keras.layers.Dense(500, activation="relu"),
+    tf.keras.layers.Dense(100, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+Epoch 1/5
+915/915 [==============================] - 60s 64ms/step - loss: 2363402.7500 - accuracy: 0.6550 - precision: 0.3190 - recall: 0.0218 - val_loss: 0.6369 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 59s 64ms/step - loss: 0.6395 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 59s 64ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 59s 64ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 59s 64ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+
+#####################################################################################################################################
+
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1000, activation="relu"),
+    tf.keras.layers.Dense(1000, activation="relu"),
+    tf.keras.layers.Dense(100, activation="relu"),
+    tf.keras.layers.Dense(250, activation="relu"),
+    tf.keras.layers.Dense(50, activation="relu"),
+    tf.keras.layers.Dense(10, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+Epoch 1/5
+915/915 [==============================] - 5s 4ms/step - loss: 14.2546 - accuracy: 0.6570 - precision: 0.3610 - recall: 0.0240 - val_loss: 0.6370 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 4s 4ms/step - loss: 0.6395 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 4s 4ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 4s 4ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 3s 4ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+
+#######################################################################################
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1000, activation="relu"),
+    tf.keras.layers.Dense(1000, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+Epoch 1/5
+915/915 [==============================] - 4s 4ms/step - loss: 22.8660 - accuracy: 0.6526 - precision: 0.3567 - recall: 0.0396 - val_loss: 0.6371 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6396 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 3s 4ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+#########################################################################
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(500, activation="relu"),
+    tf.keras.layers.Dense(500, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+
+Epoch 1/5
+915/915 [==============================] - 4s 3ms/step - loss: 6.4173 - accuracy: 0.6581 - precision: 0.3687 - recall: 0.0214 - val_loss: 0.6369 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6395 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 3s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+#########################################################################
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(100, activation="relu"),
+    tf.keras.layers.Dense(100, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+Epoch 1/5
+915/915 [==============================] - 4s 3ms/step - loss: 1.5224 - accuracy: 0.6580 - precision: 0.3909 - recall: 0.0279 - val_loss: 0.6369 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6395 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+
+#########################################################################
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(50, activation="relu"),
+    tf.keras.layers.Dense(50, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+Epoch 1/5
+915/915 [==============================] - 4s 3ms/step - loss: 1.2903 - accuracy: 0.6541 - precision: 0.3372 - recall: 0.0282 - val_loss: 0.6369 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6395 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+#########################################################################
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10, activation="relu"),
+    tf.keras.layers.Dense(10, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+Epoch 1/5
+915/915 [==============================] - 4s 3ms/step - loss: 0.8868 - accuracy: 0.6568 - precision: 0.3439 - recall: 0.0211 - val_loss: 0.6183 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6256 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6385 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6402 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6367 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6398 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6368 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 2s 3ms/step - loss: 0.6401 - accuracy: 0.6633 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6387 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+
+#########################################################################
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1000, activation="relu"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
+])
+
+
+BATCH_SIZE = 10
+EPOCHS = 5
+
+
+Epoch 1/5
+915/915 [==============================] - 4s 3ms/step - loss: 124.0592 - accuracy: 0.5717 - precision: 0.3633 - recall: 0.3614 - val_loss: 34.0179 - val_accuracy: 0.6077 - val_precision: 0.4153 - val_recall: 0.4336
+Epoch 2/5
+915/915 [==============================] - 3s 3ms/step - loss: 137.6593 - accuracy: 0.5729 - precision: 0.3650 - recall: 0.3630 - val_loss: 52.6235 - val_accuracy: 0.6165 - val_precision: 0.4261 - val_recall: 0.4336
+Epoch 3/5
+915/915 [==============================] - 3s 3ms/step - loss: 181.5483 - accuracy: 0.5685 - precision: 0.3562 - recall: 0.3487 - val_loss: 50.6196 - val_accuracy: 0.6460 - val_precision: 0.4444 - val_recall: 0.2478
+Epoch 4/5
+915/915 [==============================] - 3s 3ms/step - loss: 56.3410 - accuracy: 0.5752 - precision: 0.3697 - recall: 0.3714 - val_loss: 88.2195 - val_accuracy: 0.6667 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 5/5
+915/915 [==============================] - 3s 3ms/step - loss: 143.5872 - accuracy: 0.5869 - precision: 0.3860 - recall: 0.3844 - val_loss: 276.9673 - val_accuracy: 0.4208 - val_precision: 0.2439 - val_recall: 0.3510
+
+
+
 ### stuff n things
 
 value_map = {

@@ -5,7 +5,7 @@ import numpy as np
 from pickletools import optimize
 import pandas as pd
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 pd.set_option("display.max_rows", 5000)
@@ -116,20 +116,25 @@ def handle_data(df, target_column):
     # return ([data.pop(target_column), data])
 
 
-def neural_nets(x_train, y_train):
+def neural_nets(x_train, y_train, x_test, y_test):
 
     scaler = StandardScaler()
     x_train_scaled = scaler.fit_transform(x_train)
+    x_test_scaled = scaler.fit_transform(x_test)
 
     tf.random.set_seed(50)
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(5000, activation="relu"),
-        tf.keras.layers.Dense(5000, activation="relu"),
-        tf.keras.layers.Dense(2500, activation="relu"),
-        tf.keras.layers.Dense(500, activation="relu"),
-        tf.keras.layers.Dense(1, activation="softmax")
+        tf.keras.layers.Dense(10, activation="relu"),
+        tf.keras.layers.Dense(10, activation="relu"),
+        tf.keras.layers.Dense(1, activation="sigmoid")
     ])
+
+    # model = tf.keras.Sequential([
+    #     tf.keras.layers.Dense(2500, activation="relu"),
+    #     tf.keras.layers.Flatten(),
+    #     tf.keras.layers.Dense(1, activation="sigmoid")
+    # ])
 
     model.compile(
         loss=tf.keras.losses.binary_crossentropy,
@@ -141,16 +146,38 @@ def neural_nets(x_train, y_train):
         ]
     )
 
-    # checkpoint_path = "training_1/cp.ckpt"
-    # checkpoint_dir = os.path.dirname(checkpoint_path)
+    checkpoint_path = "training_1/cp.ckpt"
+    checkpoint_dir = os.path.dirname(checkpoint_path)
 
-    # cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-    #                                                  save_weights_only=True,
-    #                                                  verbose=1)
+    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                     save_weights_only=True,
+                                                     verbose=1)
 
-    # model.fit(x_train, y_train, epochs=15, callbacks=[cp_callback])
+    # model.fit(x_train_scaled, y_train, epochs=5, batch_size=10,
+    #           validation_data=(x_test_scaled, y_test), callbacks=[cp_callback])
 
-    model.fit(x_train_scaled, y_train, epochs=15)
+    model.fit(x_train_scaled, y_train, epochs=5, batch_size=10,
+              validation_data=(x_test_scaled, y_test))
+
+
+def get_data(PATH_TO_FINAL_DATA):
+
+    x_arr = []
+    y_arr = []
+    for index, file in enumerate(os.listdir(PATH_TO_FINAL_DATA + "X/")):
+
+        x_train = pd.read_csv(PATH_TO_FINAL_DATA + "X/" +
+                              file, index_col=[0])
+        y_train = pd.read_csv(PATH_TO_FINAL_DATA + "Y/" +
+                              file, index_col=[0])
+
+        x_arr.append(x_train)
+        y_arr.append(y_train)
+
+        if index > 100:
+            break
+
+    return pd.concat(x_arr).to_numpy(), pd.concat(y_arr).to_numpy()
 
 
 def main():
@@ -188,10 +215,23 @@ def main():
 
     #print("handle_data_out: ", type(handle_data_out[0]))
 
-    x_train = pd.read_csv(PATH_TO_FINAL_DATA + "X/" + "AAPL_1.csv")
-    y_train = pd.read_csv(PATH_TO_FINAL_DATA + "Y/" + "AAPL_1.csv")
+    x_train, y_train = get_data(PATH_TO_FINAL_DATA)
 
-    neural_nets(x_train, y_train)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x_train, y_train, test_size=0.1, random_state=50)
+
+    print(x_train)
+    print(y_train)
+
+    neural_nets(x_train, y_train, x_test, y_test)
+
+
+"""
+
+JUST NEED MORE DATA!!! :)
+
+
+"""
 
 
 if __name__ == "__main__":

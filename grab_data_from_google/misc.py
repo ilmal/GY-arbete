@@ -21,59 +21,68 @@ def start_format_data():
     EARLIEST_INDEX_DATE = "1971-02-05"
     OUTPUT_FOLDER = "./output_data/"
 
-    file_name = "AAPL.csv"
+    # file_name = "AAPL.csv"
     # file_name = "ACAD.csv"
 
-    df = pd.read_csv(DATA_FOLDER + file_name)
-
-    # Must be greater than 100
+    # Must be greater than 100, don't change this. The math is not fun... :(
     batch_size = 200
 
-    # Check if data already exists:
+    def start_batch(file_name, i):
+        while True:
 
-    index_values = [0]
-    for file in os.listdir(OUTPUT_FOLDER + "X/"):
-        if file_name.split(".")[0] in file:
-            print("FOUND: ", file_name.split(".")[0], "in ", file)
-            index_values.append(int(file.split("_")[1].split(".")[0]))
+            print(
+                "\n",
+                "\n",
+                "\n",
+                "######################################################",
+                "\n",
+                f"RUN NUMBER: {i} FOR DATA: {file_name}"
+                "\n",
+                "######################################################",
+                "\n",
+                "\n",
+                "\n",
+            )
 
-    index_values.sort()
-    i = index_values[-1] + 1
-    while True:
+            span = [i * 100, i * 100 + batch_size]
 
-        print(
-            "\n",
-            "\n",
-            "\n",
-            "######################################################",
-            "\n",
-            f"RUN NUMBER: {i}"
-            "\n",
-            "######################################################",
-            "\n",
-            "\n",
-            "\n",
-        )
-
-        span = [i * batch_size, i * batch_size + batch_size]
-
-        if span[1] >= len(df.index):
-            data_batch = df.iloc[span[0]:len(df.index), :]
+            if span[1] >= len(df.index):
+                data_batch = df.iloc[span[0]:len(df.index), :]
+                data_batch = data_batch.reset_index(drop=True)
+                format_data(data_batch, i, file_name, INDEX_FOLDER,
+                            EARLIEST_INDEX_DATE, OUTPUT_FOLDER)
+                break
+            data_batch = df.iloc[span[0]:span[1], :]
             data_batch = data_batch.reset_index(drop=True)
             format_data(data_batch, i, file_name, INDEX_FOLDER,
                         EARLIEST_INDEX_DATE, OUTPUT_FOLDER)
-            break
-        data_batch = df.iloc[span[0]:span[1], :]
-        data_batch = data_batch.reset_index(drop=True)
-        format_data(data_batch, i, file_name, INDEX_FOLDER,
-                    EARLIEST_INDEX_DATE, OUTPUT_FOLDER)
-        i += 1
+            i += 1
+        return
+
+    for file in os.listdir(DATA_FOLDER):
+
+        file_name = file
+
+        index_values = [0]
+        for output_file in os.listdir(OUTPUT_FOLDER + "X/"):
+            if output_file.split("_")[0] in file_name:
+
+                # Check if data already exists:
+                print("FOUND: ", file_name, "in ", output_file.split("_")[0])
+                index_values.append(
+                    int(output_file.split("_")[1].split(".")[0]))
+
+        index_values.sort()
+        i = index_values[-1]
+
+        print(i)
+
+        df = pd.read_csv(DATA_FOLDER + file_name)
+
+        start_batch(file_name, i)
 
 
 def format_data(data_batch, batch_index, file_name, INDEX_FOLDER, EARLIEST_INDEX_DATE, OUTPUT_FOLDER):
-
-    print("INDEX: ", data_batch["Date"].index)
-
     def calc_spans(dates):
 
         # check if first date is before limit, set by index + 10y
@@ -101,7 +110,7 @@ def format_data(data_batch, batch_index, file_name, INDEX_FOLDER, EARLIEST_INDEX
             span_index = [(n), (n + BATCH_SIZE_OF_ACTUAL_STOCK)]
 
             # print(len(data_batch.values.tolist()))
-            print(span_index[1])
+            # print(span_index[1])
 
             if span_index[1] >= len(data_batch.values.tolist()):
                 print("\n", "BREAKING!", "\n")
@@ -230,7 +239,11 @@ def format_data(data_batch, batch_index, file_name, INDEX_FOLDER, EARLIEST_INDEX
             df = df.rename(columns=str.lower)
 
             df["date"] = df["date"].str.replace(
-                " 16.00.00", "").replace(" 13.00.00", "")
+                " 16.00.00", "")
+            df["date"] = df["date"].str.replace(
+                " 13.00.00", "")
+
+            df = df.replace(",", ".", regex=True)
 
             df = df.set_index("date")
 
@@ -370,6 +383,9 @@ def format_data(data_batch, batch_index, file_name, INDEX_FOLDER, EARLIEST_INDEX
     df = create_training_data(data_span, index_span)
 
     x_df, y_df = split_data(df)
+
+    # if len(y_df.index) != 100:
+    #     print("DATA IS NOT WITH LENGH")
 
     output_data(x_df, y_df)
 
