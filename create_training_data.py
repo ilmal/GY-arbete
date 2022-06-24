@@ -125,8 +125,12 @@ def neural_nets(x_train, y_train, x_test, y_test):
     tf.random.set_seed(50)
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(10, activation="relu"),
-        tf.keras.layers.Dense(10, activation="relu"),
+        tf.keras.layers.Dense(10000, activation="relu"),
+        tf.keras.layers.Dense(10000, activation="relu"),
+        tf.keras.layers.Dense(5000, activation="relu"),
+        tf.keras.layers.Dense(2500, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
+        tf.keras.layers.Dense(100, activation="relu"),
         tf.keras.layers.Dense(1, activation="sigmoid")
     ])
 
@@ -156,7 +160,7 @@ def neural_nets(x_train, y_train, x_test, y_test):
     # model.fit(x_train_scaled, y_train, epochs=5, batch_size=10,
     #           validation_data=(x_test_scaled, y_test), callbacks=[cp_callback])
 
-    model.fit(x_train_scaled, y_train, epochs=5, batch_size=10,
+    model.fit(x_train_scaled, y_train, epochs=500,
               validation_data=(x_test_scaled, y_test))
 
 
@@ -174,8 +178,8 @@ def get_data(PATH_TO_FINAL_DATA):
         x_arr.append(x_train)
         y_arr.append(y_train)
 
-        if index > 100:
-            break
+        # if index > 100:
+        #     break
 
     return pd.concat(x_arr).to_numpy(), pd.concat(y_arr).to_numpy()
 
