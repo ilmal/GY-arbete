@@ -116,14 +116,7 @@ def handle_data(df, target_column):
     # return ([data.pop(target_column), data])
 
 
-def neural_nets(x_train, y_train, x_test, y_test):
-
-    scaler = StandardScaler()
-    x_train_scaled = scaler.fit_transform(x_train)
-    x_test_scaled = scaler.fit_transform(x_test)
-
-    tf.random.set_seed(50)
-
+def create_model():
     model = tf.keras.Sequential([
         tf.keras.layers.Dense(10000, activation="relu"),
         tf.keras.layers.Dense(10000, activation="relu"),
@@ -142,13 +135,26 @@ def neural_nets(x_train, y_train, x_test, y_test):
 
     model.compile(
         loss=tf.keras.losses.binary_crossentropy,
-        optimizer=tf.keras.optimizers.Adam(learning_rate=0.03),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),
         metrics=[
             tf.keras.metrics.BinaryAccuracy(name="accuracy"),
             tf.keras.metrics.Precision(name="precision"),
             tf.keras.metrics.Recall(name="recall")
         ]
     )
+
+    return model
+
+
+def neural_nets(x_train, y_train, x_test, y_test):
+
+    model = create_model()
+
+    scaler = StandardScaler()
+    x_train_scaled = scaler.fit_transform(x_train)
+    x_test_scaled = scaler.fit_transform(x_test)
+
+    tf.random.set_seed(50)
 
     checkpoint_path = "training_1/cp.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -157,11 +163,13 @@ def neural_nets(x_train, y_train, x_test, y_test):
                                                      save_weights_only=True,
                                                      verbose=1)
 
-    # model.fit(x_train_scaled, y_train, epochs=5, batch_size=10,
-    #           validation_data=(x_test_scaled, y_test), callbacks=[cp_callback])
+    model.fit(x_train, y_train, epochs=5,
+              validation_data=(x_test, y_test))
 
-    model.fit(x_train_scaled, y_train, epochs=500,
-              validation_data=(x_test_scaled, y_test))
+    model.save("./saved_model/model")
+
+    # model.fit(x_train, y_train, epochs=5,
+    #           validation_data=(x_test, y_test))
 
 
 def get_data(PATH_TO_FINAL_DATA):
@@ -178,8 +186,8 @@ def get_data(PATH_TO_FINAL_DATA):
         x_arr.append(x_train)
         y_arr.append(y_train)
 
-        # if index > 100:
-        #     break
+        if index > 50:
+            break
 
     return pd.concat(x_arr).to_numpy(), pd.concat(y_arr).to_numpy()
 
