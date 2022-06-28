@@ -481,6 +481,7 @@ Epoch 114/500
  321/1769 [====>.........................] - ETA: 1:33 - loss: 0.6866 - accuracy: 0.5590 - precision: 0.0000e+00 - recall: 0.0000e+00^CTraceback (most recent call last):
 
 ```
+<<<<<<< HEAD
 
 ---
 
@@ -492,6 +493,8 @@ Epoch 2/500
 Epoch 3/500
 1769/1769 [==============================] - 119s 68ms/step - loss: 0.6885 - accuracy: 0.5513 - precision: 1.0000 - recall: 3.9375e-05 - val_loss: 0.6893 - val_accuracy: 0.5448 - val_precision: 1.0000 - val_recall: 3.4916e-04
 ```
+=======
+>>>>>>> 2b8e5b13615df74d8464e94e6388ecbbc39be68d
 
 
 ### stuff n things
