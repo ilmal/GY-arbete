@@ -1,3 +1,4 @@
+from tkinter import NUMERIC
 from create_training_data import get_data
 
 import keras
@@ -17,7 +18,17 @@ def main():
 
     # Evaluate the model
     score = model.evaluate(x_test, y_test, verbose=1)
-    print(f"Untrained model, accuracy: {100 * score[1]}%")
+    print(f"accuracy: {100 * score[1]}%")
+
+    NUMBER_OF_PREDICTIONS = 10
+
+    x_pred_val = x_test[:NUMBER_OF_PREDICTIONS]
+    y_pred_val = y_test[:NUMBER_OF_PREDICTIONS]
+
+    predictions = model.predict(x_pred_val)
+
+    print(predictions)
+    print(y_pred_val)
 
 
 if __name__ == "__main__":

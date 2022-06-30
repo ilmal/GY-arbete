@@ -118,10 +118,14 @@ def handle_data(df, target_column):
 
 def create_model():
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(10000, activation="relu"),
+        tf.keras.layers.Dense(16000, activation="relu"),
         tf.keras.layers.Dense(10000, activation="relu"),
         tf.keras.layers.Dense(5000, activation="relu"),
         tf.keras.layers.Dense(2500, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
         tf.keras.layers.Dense(500, activation="relu"),
         tf.keras.layers.Dense(100, activation="relu"),
         tf.keras.layers.Dense(1, activation="sigmoid")
@@ -163,7 +167,7 @@ def neural_nets(x_train, y_train, x_test, y_test):
                                                      save_weights_only=True,
                                                      verbose=1)
 
-    model.fit(x_train, y_train, epochs=5,
+    model.fit(x_train, y_train, epochs=5, batch_size=1,
               validation_data=(x_test, y_test))
 
     model.save("./saved_model/model")

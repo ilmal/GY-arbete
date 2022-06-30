@@ -496,6 +496,38 @@ Epoch 3/500
 =======
 >>>>>>> 2b8e5b13615df74d8464e94e6388ecbbc39be68d
 
+---
+
+    model = tf.keras.Sequential([
+        tf.keras.layers.Dense(16000, activation="relu"),
+        tf.keras.layers.Dense(10000, activation="relu"),
+        tf.keras.layers.Dense(5000, activation="relu"),
+        tf.keras.layers.Dense(2500, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
+        tf.keras.layers.Dense(500, activation="relu"),
+        tf.keras.layers.Dense(100, activation="relu"),
+        tf.keras.layers.Dense(1, activation="sigmoid")
+    ])
+
+```
+
+Epoch 1/5
+4427/4427 [==============================] - 386s 87ms/step - loss: 507568352.0000 - accuracy: 0.5439 - precision: 0.4449 - recall: 0.0507 - val_loss: 0.6882 - val_accuracy: 0.5508 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 2/5
+4427/4427 [==============================] - 385s 87ms/step - loss: 0.6898 - accuracy: 0.5478 - precision: 0.4091 - recall: 0.0090 - val_loss: 0.6900 - val_accuracy: 0.5508 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 3/5
+4427/4427 [==============================] - 386s 87ms/step - loss: 0.6894 - accuracy: 0.5487 - precision: 0.0000e+00 - recall: 0.0000e+00 - val_loss: 0.6914 - val_accuracy: 0.5508 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
+Epoch 4/5
+1480/4427 [=========>....................] - ETA: 4:12 - loss: 0.6892 - accuracy: 0.5527 - precision: 0.0000e+00 - recall: 0.0000e+00^CTraceback (most recent call last):
+
+
+```
+
+
+
 
 ### stuff n things
 
